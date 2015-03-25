@@ -4,23 +4,7 @@ import json
 import sqlite3
 import sys
 
-class Joke(object):
-    def __init__(self, idx, text, rating, time):
-        self._id = idx
-        self.text = text
-        self.rating = rating
-        self.time = time
-
-        self.categories = []
-        self.subcategories = []
-
-    def to_dict(self):
-        """because using a dict in the first place was too mainstream
-           long live JS!"""
-        return {'text': self.text,
-                'rating': self.rating,
-                'categories': self.categories,
-                'subcategories': self.subcategories}
+from util import joke
 
 def get_all_jokes():
     """Get all jokes in memory, 5M no worries here"""
@@ -37,8 +21,8 @@ def get_all_jokes():
                     WHERE jhc.id_joke = %d AND
                           jhc.id_subcategory = s.id_subcategory
                  """
-    for row in c.execute(qry):
-        j = Joke(*row)
+    for _id, text, rating, time in c.execute(qry):
+        j = joke.Joke(idx=_id, text=text, rating=rating, time=time)
         category_c = conn.cursor()
         for category, in category_c.execute(cat_qry % j._id):
             j.categories.append(category)
