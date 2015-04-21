@@ -10,11 +10,8 @@ class Joke(object):
         self.text = text
         self.rating = rating
         self.time = time
-
-        if not categories:
-            self.categories = []
-        if not subcategories:
-            self.subcategories = []
+        self.categories = categories or []
+        self.subcategories = subcategories or []
 
     def to_dict(self):
         """because using a dict in the first place was too mainstream
