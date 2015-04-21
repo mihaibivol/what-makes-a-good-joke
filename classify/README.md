@@ -1,0 +1,31 @@
+# Classifiers
+
+## Random forest
+
+* read all jokes
+* decide funny or not if log(score) < THRESHOLD
+* use dictvectorizer + tfidf to extract features from the text
+* use categories and subcategories as features
+* put all data in random forest classifier
+* predict funny or not on the rest of test data
+* count good/bad predictions
+
+To run: `PYTHONPATH=. python classify/random_forest.py`
+
+Sample output:
+
+```
+[Parallel(n_jobs=4)]: Done   1 out of  50 | elapsed:    0.6s remaining:   31.8s
+[Parallel(n_jobs=4)]: Done  50 out of  50 | elapsed:   13.3s finished
+[Parallel(n_jobs=4)]: Done   1 out of  50 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=4)]: Done  50 out of  50 | elapsed:    0.0s finished
+3132 good out of 4349. Bad: 1217.
+72.02
+```
+
+Last line is good/total * 100.
+
+Notes:
+
+* tried ngram 2, 3 but score did not improve
+* as THRESHOLD increases, accuracy increases (since there are more non funny than funny jokes)
