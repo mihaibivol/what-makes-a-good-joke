@@ -10,7 +10,7 @@
 * predict funny or not on the rest of test data
 * count good/bad predictions
 
-To run: `PYTHONPATH=. python classify/random_forest.py`
+To run, from root dir: `python -m classify.random_forest`
 
 Sample output:
 
