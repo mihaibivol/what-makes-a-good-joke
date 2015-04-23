@@ -29,3 +29,18 @@ Notes:
 
 * tried ngram 2, 3 but score did not improve
 * as THRESHOLD increases, accuracy increases (since there are more non funny than funny jokes)
+
+## Multinomial Naive Bayes
+
+* same routine for parsing data as Random Forest
+* probability for word w to be in class C is calculated as such
+![bayes](http://bit.ly/1Egm8ex)
+(generated with http://www.sciweavers.org/free-online-latex-equation-editor)
+
+To run, from root dir: `python -m classify.naive_bayes`
+
+Sample output:
+```
+3209 good out of 4349. Bad: 1140.
+73.79
+```
