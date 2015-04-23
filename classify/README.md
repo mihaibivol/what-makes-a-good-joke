@@ -34,7 +34,8 @@ Notes:
 
 * same routine for parsing data as Random Forest
 * probability for word w to be in class C is calculated as such
-![bayes](http://bit.ly/1Egm8ex)
+![bayes](http://i.imgur.com/fRjvFlT.png)
+
 (generated with http://www.sciweavers.org/free-online-latex-equation-editor)
 
 To run, from root dir: `python -m classify.naive_bayes`
