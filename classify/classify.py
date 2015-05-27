@@ -1,4 +1,8 @@
 import numpy as np
+import lda
+import nltk
+from nltk.corpus import stopwords
+
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectKBest
@@ -48,12 +52,15 @@ def process_joke(joke):
     joke.text = joke.text.lower()
 
     # Replace text with dict.
-    vectorizer = TfidfVectorizer(stop_words='english')
+    stop_words = set(stopwords.words('english'))
+    vectorizer = TfidfVectorizer()
     tokenizer = vectorizer.build_tokenizer()
 
     def tokenize_text(text, prefix=''):
         d = {}
         for term in tokenizer(text):
+            if term in stop_words:
+                continue
             d[prefix + term] = d.get(prefix + term, 0) + 1
         return d
 
@@ -95,11 +102,21 @@ X_test = dictv.transform(test_dict_data)
 ###################################
 
 
+# LDA with logistic regression
+
+vocabulary = dictv.get_feature_names()
+model = lda.LDA(n_topics=20, n_iter=500, random_state=1)
+model.fit(X_train)
+n_top_words=10
+for i, topic_dist in enumerate(model.topic_word_):
+    topic_words = np.array(vocabulary)[np.argsort(topic_dist)][:-n_top_words:-1]
+    print('Topic {}: {}'.format(i, ' '.join(topic_words)))
+
 # Random forest classifier - gives about 70% accuracy
 cl1 = RandomForestClassifier(n_estimators=50, verbose=1,
                                     n_jobs=4)
 cl1.fit(X_train, target)
-pr1 = classifier.predict(X_test)
+pr1 = cl1.predict(X_test)
 print"Random forest: " + "%.2f" % (evaluate(pr1, test_jokes)) + "%"
 
 
@@ -144,3 +161,5 @@ cl6 = tree.DecisionTreeClassifier()
 cl6.fit(X_train, target)
 pr6 = cl6.predict(X_test)
 print"Decision tree: " + "%.2f" % (evaluate(pr6, test_jokes)) + "%"
+
+
