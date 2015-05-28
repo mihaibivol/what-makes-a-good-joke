@@ -103,15 +103,15 @@ X_test = dictv.transform(test_dict_data)
 
 
 # LDA with logistic regression
-#
-#vocabulary = dictv.get_feature_names()
-#model = lda.LDA(n_topics=20, n_iter=500, random_state=1)
-#model.fit(X_train)
-#n_top_words=10
-#for i, topic_dist in enumerate(model.topic_word_):
-#    topic_words = np.array(vocabulary)[np.argsort(topic_dist)][:-n_top_words:-1]
-#    print('Topic {}: {}'.format(i, ' '.join(topic_words)))
-#
+
+vocabulary = dictv.get_feature_names()
+model = lda.LDA(n_topics=20, n_iter=500, random_state=1)
+model.fit(X_train)
+n_top_words=10
+for i, topic_dist in enumerate(model.topic_word_):
+    topic_words = np.array(vocabulary)[np.argsort(topic_dist)][:-n_top_words:-1]
+    print('Topic {}: {}'.format(i, ' '.join(topic_words)))
+
 # Random forest classifier - gives about 70% accuracy
 cl1 = RandomForestClassifier(n_estimators=50, verbose=1,
                                     n_jobs=4)
