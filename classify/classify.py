@@ -103,20 +103,21 @@ X_test = dictv.transform(test_dict_data)
 
 
 # LDA with logistic regression
-
-vocabulary = dictv.get_feature_names()
-model = lda.LDA(n_topics=20, n_iter=500, random_state=1)
-model.fit(X_train)
-n_top_words=10
-for i, topic_dist in enumerate(model.topic_word_):
-    topic_words = np.array(vocabulary)[np.argsort(topic_dist)][:-n_top_words:-1]
-    print('Topic {}: {}'.format(i, ' '.join(topic_words)))
-
+#
+#vocabulary = dictv.get_feature_names()
+#model = lda.LDA(n_topics=20, n_iter=500, random_state=1)
+#model.fit(X_train)
+#n_top_words=10
+#for i, topic_dist in enumerate(model.topic_word_):
+#    topic_words = np.array(vocabulary)[np.argsort(topic_dist)][:-n_top_words:-1]
+#    print('Topic {}: {}'.format(i, ' '.join(topic_words)))
+#
 # Random forest classifier - gives about 70% accuracy
 cl1 = RandomForestClassifier(n_estimators=50, verbose=1,
                                     n_jobs=4)
 cl1.fit(X_train, target)
 pr1 = cl1.predict(X_test)
+allpred = np.array(pr1)
 print"Random forest: " + "%.2f" % (evaluate(pr1, test_jokes)) + "%"
 
 
@@ -124,6 +125,7 @@ print"Random forest: " + "%.2f" % (evaluate(pr1, test_jokes)) + "%"
 cl2 = svm.SVC()
 cl2.fit(X_train, target)
 pr2 = cl2.predict(X_test)
+allpred += pr2
 print"SVM with RBF Kernel: " + "%.2f" % (evaluate(pr2, test_jokes)) + "%"
 
 
@@ -135,6 +137,7 @@ cl3 = LogisticRegression(penalty='l1', dual=False, tol=0.0001, C=1.0,
                         multi_class='ovr', verbose=0)
 cl3.fit(X_train, target)
 pr3 = cl3.predict(X_test)
+allpred += pr3
 print"Logistic regression: " + "%.2f" % (evaluate(pr3, test_jokes)) + "%"
 
 
@@ -146,6 +149,7 @@ cl4 = SGDClassifier(loss='hinge', penalty='l2', alpha=0.0001, l1_ratio=0.15,
                       average=False)
 cl4.fit(X_train, target)
 pr4 = cl4.predict(X_test)
+allpred += pr4
 print"SGD: " + "%.2f" % (evaluate(pr4, test_jokes)) + "%"
 
 
@@ -160,6 +164,10 @@ print"KNN: " + "%.2f" % (evaluate(pr5, test_jokes)) + "%"
 cl6 = tree.DecisionTreeClassifier()
 cl6.fit(X_train, target)
 pr6 = cl6.predict(X_test)
+allpred += pr6
 print"Decision tree: " + "%.2f" % (evaluate(pr6, test_jokes)) + "%"
 
 
+maxpred = max(allpred)
+pr7 = [1 if x > maxpred / 2 else 0 for x in allpred]
+print "Bagging: " + "%.2f" % (evaluate(pr7, test_jokes)) + "%"
