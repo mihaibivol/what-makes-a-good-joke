@@ -105,12 +105,29 @@ X_test = dictv.transform(test_dict_data)
 # LDA with logistic regression
 
 vocabulary = dictv.get_feature_names()
-model = lda.LDA(n_topics=20, n_iter=500, random_state=1)
-model.fit(X_train)
-n_top_words=10
+model = lda.LDA(n_topics=60, n_iter=350, random_state=1)
+X_train_topics = model.fit_transform(X_train)
+X_test_topics = model.transform(np.array(X_test.todense()).astype(int))
+
+X_train_topics = np.append(np.array(X_train.todense()), X_train_topics, axis=1)
+X_test_topics = np.append(np.array(X_test.todense()), X_test_topics, axis=1)
+
+n_top_words=25
 for i, topic_dist in enumerate(model.topic_word_):
     topic_words = np.array(vocabulary)[np.argsort(topic_dist)][:-n_top_words:-1]
     print('Topic {}: {}'.format(i, ' '.join(topic_words)))
+
+cl0 = LogisticRegression(penalty='l1', dual=False, tol=0.0001, C=1.0, 
+                         fit_intercept=True, intercept_scaling=1, 
+                         class_weight=None, random_state=None, 
+                         solver='liblinear', max_iter=100, 
+                         multi_class='ovr', verbose=0)
+cl0.fit(X_train_topics,target)
+pr0 = cl0.predict(X_test_topics)
+print"Logistic regression with LDA topics: " + "%.2f" % (evaluate(pr0, test_jokes)) + "%"
+
+
+
 
 # Random forest classifier - gives about 70% accuracy
 cl1 = RandomForestClassifier(n_estimators=50, verbose=1,
